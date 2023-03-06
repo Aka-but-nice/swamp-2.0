@@ -4,5 +4,5 @@ Steps:
 javascript:alert("Testing")```
 if you get an alert, you can continue, otherwise if you did not, you can not continue with the steps.
 2. Bookmark this code ```
-fetch("https://cdn.jsdelivr.net/gh/Aka-unblock/swamp-2.0@main/code.js").then(e=>{e.text().then(f=>{eval(f)})})```
+javascript:fetch("https://cdn.jsdelivr.net/gh/Aka-unblock/swamp-2.0@main/code.js").then(e=>{e.text().then(f=>{eval(f)})})```
 Go to https://tinyurl.com/bettergoofboss, click the link it will open a blank page, on that page run the bookmarklet you bookmarked.
